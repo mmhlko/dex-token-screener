@@ -1,4 +1,11 @@
-import { Controller, Get, Query, Logger, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Logger,
+  Param,
+  BadRequestException,
+} from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -30,6 +37,9 @@ export class ApiController {
   })
   @ApiOkResponse({ description: 'List of pairs', type: [PairDto] })
   async searchPairs(@Query('q') query: string): Promise<PairDto[]> {
+    if (!query || query.trim() === '') {
+      throw new BadRequestException('Query parameter "q" is required');
+    }
     this.logger.log(`Searching pairs for: ${query}`);
     return this.apiService.searchPairs(query);
   }
@@ -48,7 +58,7 @@ export class ApiController {
     required: true,
     description: 'Pair address',
     type: String,
-    example: 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
+    example: '2uf4xh61rdwxng9woyxsvqp7zua6klfpb3nvnrqeoisd',
   })
   @ApiOkResponse({ description: 'Pair details', type: [PairDto] })
   async getPairByAddress(
@@ -60,18 +70,19 @@ export class ApiController {
   }
 
   @Get('tokens/:chainId/:tokenAddress')
-  @ApiOperation({ summary: 'Search trading pairs by query' })
+  @ApiOperation({ summary: 'Search trading pairs by token address' })
   @ApiParam({
     name: 'chainId',
     description: 'Chain identifier (e.g. solana, ethereum)',
     required: true,
     type: String,
+    example: 'polygon',
   })
   @ApiParam({
     name: 'tokenAddress',
     required: true,
-    description: 'Comma-separated token addresses (e.g. address1,address1)',
-    example: 'So11111111111111111111111111111111111111112',
+    description: 'Token address',
+    example: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
   })
   @ApiOkResponse({ description: 'List of pairs', type: [PairDto] })
   async getPairsByToken(

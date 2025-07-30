@@ -22,7 +22,6 @@ export class ApiService {
       this.logger.log(`Found ${cachedPairs.length} cached pairs by query: ${query}`);
       return cachedPairs;
     }
-
     try {
       const resp = await firstValueFrom(
         this.http.get<DexScreenerResponse>(
@@ -34,6 +33,9 @@ export class ApiService {
       );
       this.logger.debug({ data: resp.data });
       const pairs = resp.data.pairs || [];
+      if (pairs.length === 0) {
+        return [];
+      }
       this.logger.log(`Found ${pairs.length} pairs by query: ${query}`);
       const transformedPairs = transformToPairDto(pairs);
       await this.redisService.savePairsData({ pairs: transformedPairs, query });
@@ -46,9 +48,6 @@ export class ApiService {
     }
   }
 
-  /**
-   * Получение деталей пар по их адресам (до 30 адресов) для указанной цепочки
-   */
   async getPairByAddress(chainId: string, pairId: string): Promise<PairDto[]> {
     const cachedPair = await this.redisService.getPairData(pairId);
     if (cachedPair) {
