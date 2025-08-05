@@ -14,7 +14,31 @@ Backend service for searching trading tokens and pairs via **Dexscreener API**, 
 - Caches results using Redis
 - API documentation with Swagger
 - Error logging
-- Basic unit tests
+- Comprehensive test coverage (Unit + E2E tests)
+- Input validation and error handling
+
+---
+
+## 🧪 Testing
+
+The project includes comprehensive test coverage:
+
+### Unit Tests
+```bash
+npm run test
+```
+
+### E2E Tests
+```bash
+npm run test:e2e
+```
+
+### Test Coverage
+```bash
+npm run test:cov
+```
+
+See [TESTING.md](./TESTING.md) for detailed testing documentation.
 
 ---
 
@@ -23,7 +47,7 @@ Backend service for searching trading tokens and pairs via **Dexscreener API**, 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/token-search-backend.git
+git clone https://github.com/mmhlko/dex-token-screener.git
 cd token-search-backend
 ```
 
@@ -35,19 +59,17 @@ npm install
 
 ### 3. Create `.env` file
 
-```env
-PORT=3000
-
+```
 # Redis configuration
 REDIS_HOST=localhost
 REDIS_PORT=6379
 REDIS_PASSWORD=   # (optional)
 ```
 
-### 4. Run the application
+### 4. Run the application in Docker
 
 ```bash
-npm run start:dev
+docker-compose up --build -d
 ```
 
 The app will start on `http://localhost:3000`.
